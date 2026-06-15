@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robot Store — Artha</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .robot-card { display:flex; flex-direction:column; gap:8px; }
+  .robot-card .head { display:flex; align-items:center; gap:10px; }
+  .robot-card .av { width:38px; height:38px; border-radius:9px; background:linear-gradient(135deg,var(--accent-2),#6366f1); display:flex; align-items:center; justify-content:center; font-size:18px; }
+  .cap { display:flex; justify-content:space-between; font-size:12.5px; padding:5px 0; }
+  .cap .bar { width:120px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><span class="dot"></span> Artha</div>
+  <nav class="nav">
+    <a href="index.html">Overview</a>
+    <a href="world-store.html">World Store</a>
+    <a href="robot-store.html" class="active">Robot Store</a>
+    <a href="simulator.html">Artha Sim</a>
+    <a href="graders.html">Graders &amp; RL</a>
+  </nav>
+  <div class="spacer"></div>
+  <span class="pill">Pillar 2</span>
+</div>
+
+<div class="wrap">
+  <div class="kicker">Robot Store</div>
+  <h1 style="margin:6px 0 6px;">A capability model for any embodiment.</h1>
+  <p class="lede">URDF/USD tells you the geometry. Artha's capability layer answers the question that actually matters for training: <b>what can this robot do</b> — reach, payload, dexterity, sensing — and how does that transfer across bodies.</p>
+
+  <div class="versus indigo" style="margin:16px 0;">
+    <b>vs. Menagerie / Isaac asset zoos:</b> those ship kinematics &amp; dynamics. We add a <b>queryable capability abstraction</b> and <b>cross-embodiment transfer</b> — both unstandardized, both open research, both reusable across every world in the store.
+  </div>
+
+  <div class="sectiontitle">Registry</div>
+  <div class="grid cols-3">
+    <div class="card robot-card">
+      <div class="head"><div class="av">🦾</div><div><h3 style="margin:0;">SO-ARM-101</h3><div class="muted" style="font-size:12px;">tabletop · 6-DoF · parallel gripper</div></div></div>
+      <div><span class="tag mint">open / cheap</span><span class="tag gray">LeRobot</span></div>
+      <div class="cap"><span>Reach</span><span class="bar"><span style="width:40%;background:var(--accent-2);"></span></span></div>
+      <div class="cap"><span>Payload</span><span class="bar"><span style="width:25%;background:var(--accent-2);"></span></span></div>
+      <div class="cap"><span>Dexterity</span><span class="bar"><span style="width:30%;background:var(--accent-2);"></span></span></div>
+      <a class="btn" href="simulator.html">Drop into sim →</a>
+    </div>
+    <div class="card robot-card">
+      <div class="head"><div class="av">🤖</div><div><h3 style="margin:0;">Bimanual YAM</h3><div class="muted" style="font-size:12px;">dual-arm · tabletop · 2×7-DoF</div></div></div>
+      <div><span class="tag amber">hot data class</span><span class="tag gray">720h dataset</span></div>
+      <div class="cap"><span>Reach</span><span class="bar"><span style="width:55%;background:var(--accent-2);"></span></span></div>
+      <div class="cap"><span>Payload</span><span class="bar"><span style="width:45%;background:var(--accent-2);"></span></span></div>
+      <div class="cap"><span>Dexterity</span><span class="bar"><span style="width:62%;background:var(--accent-2);"></span></span></div>
+      <a class="btn" href="simulator.html">Drop into sim →</a>
+    </div>
+    <div class="card robot-card">
+      <div class="head"><div class="av">🦿</div><div><h3 style="margin:0;">Humanoid-G1</h3><div class="muted" style="font-size:12px;">whole-body · 23-DoF · dexterous hands</div></div></div>
+      <div><span class="tag indigo">cross-embodiment</span></div>
+      <div class="cap"><span>Reach</span><span class="bar"><span style="width:80%;background:var(--accent-2);"></span></span></div>
+      <div class="cap"><span>Payload</span><span class="bar"><span style="width:60%;background:var(--accent-2);"></span></span></div>
+      <div class="cap"><span>Dexterity</span><span class="bar"><span style="width:88%;background:var(--accent-2);"></span></span></div>
+      <a class="btn" href="simulator.html">Drop into sim →</a>
+    </div>
+  </div>
+
+  <div class="sectiontitle">Learn a robot from video</div>
+  <div class="grid cols-2">
+    <div class="card">
+      <div class="pipe" style="flex-direction:column; gap:10px;">
+        <div class="step" style="min-width:auto;"><div class="n">01</div><h4>Ingest a few teleop / spec videos</h4><p>Watch the arm move through its range.</p></div>
+        <div class="step" style="min-width:auto;"><div class="n">02</div><h4>Infer DoF, limits, reachable workspace</h4><p>Joint ranges, velocity/torque envelopes.</p></div>
+        <div class="step" style="min-width:auto;"><div class="n">03</div><h4>Estimate payload &amp; dexterity</h4><p>Grasp aperture, force ceiling, sensor suite.</p></div>
+        <div class="step" style="min-width:auto; border-color:var(--accent);"><div class="n">04</div><h4>Publish capability card → Robot Store</h4><p>Queryable, versioned, reusable across worlds.</p></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;">Capability query</h3>
+      <div class="code">artha robots.query(
+  task = "load dishwasher",
+  world = "kitchen_counter_v3",
+)
+# → candidates ranked by capability fit
+#   Humanoid-G1     fit 0.91  ✓ reach ✓ payload ✓ bimanual
+#   Bimanual YAM    fit 0.58  ✗ reach (floor cabinet)
+#   SO-ARM-101      fit 0.22  ✗ reach ✗ payload</div>
+      <div class="versus" style="margin-top:12px;">
+        <b>The differentiator:</b> match <b>task × world × embodiment</b> automatically, so a customer evaluating "which robot can do this job in this room" gets an answer before collecting a single real demo — and transfer learnings when they switch bodies.
+      </div>
+    </div>
+  </div>
+
+  <div class="sectiontitle">Sensor &amp; actuation model</div>
+  <div class="card">
+    <table class="data">
+      <tr><th>Channel</th><th>Spec</th><th>Sim model</th><th>Sim-to-real risk</th></tr>
+      <tr><td>RGB wrist cam</td><td>2× 640×480 @ 30Hz</td><td>RTX / tiled render</td><td><span class="tag mint">low (DR'd)</span></td></tr>
+      <tr><td>Proprioception</td><td>joint pos/vel</td><td>exact</td><td><span class="tag mint">low</span></td></tr>
+      <tr><td>Tactile / force</td><td>6-axis F/T</td><td>contact estimate</td><td><span class="tag amber">high — flag</span></td></tr>
+      <tr><td>Gripper</td><td>parallel, 0–85mm</td><td>actuator model</td><td><span class="tag gray">medium</span></td></tr>
+    </table>
+    <p class="note" style="margin-bottom:0;">Contact-rich / tactile channels are explicitly marked high-risk → routed to real-data co-training (Graders &amp; RL). We never pretend force sensing is solved in sim.</p>
+  </div>
+
+  <p class="note" style="margin-top:28px;">Mock only — illustrative data. See <a href="../Artha.md">Artha.md §3 (Pillar 2)</a>.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artha Sim — Artha</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .backend { display:flex; align-items:center; gap:8px; padding:9px 11px; border:1px solid var(--border); border-radius:9px; cursor:pointer; font-size:13px; }
+  .backend.sel { border-color:var(--accent); background:rgba(110,231,183,0.07); }
+  .backend .fps { margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--muted); }
+  .roll { display:flex; align-items:center; gap:10px; padding:8px; border-radius:8px; }
+  .roll:hover { background:var(--panel-2); }
+  .dotok { width:8px; height:8px; border-radius:50%; }
+  .traj { position:absolute; height:2px; background:linear-gradient(90deg,transparent,var(--accent)); }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><span class="dot"></span> Artha</div>
+  <nav class="nav">
+    <a href="index.html">Overview</a>
+    <a href="world-store.html">World Store</a>
+    <a href="robot-store.html">Robot Store</a>
+    <a href="simulator.html" class="active">Artha Sim</a>
+    <a href="graders.html">Graders &amp; RL</a>
+  </nav>
+  <div class="spacer"></div>
+  <span class="pill">Pillar 3 · commodity glue</span>
+</div>
+
+<div class="wrap">
+  <div class="kicker">Artha Sim</div>
+  <h1 style="margin:6px 0 6px;">One API over every backend. We don't build physics.</h1>
+  <p class="lede">Wire <span class="mono">kitchen_counter_v3</span> × <span class="mono">Humanoid-G1</span> and fan out millions of rollouts. Pick the engine that fits the task — Artha handles the translation, domain randomization, and rollout capture.</p>
+
+  <div class="versus" style="margin:16px 0;">
+    <b>Deliberately not a moat.</b> Building another physics engine is wasted capital — Isaac Lab, MuJoCo MJX, and ManiSkill already do GPU-parallel sim. <b>vs. Genesis's viral "43M FPS":</b> that was a near-degenerate config (1 substep, self-collisions off, idle robot); realistic settings drop it ~150×. We report <b>honest, task-matched throughput</b>, not headline numbers.
+  </div>
+
+  <div class="grid cols-3">
+    <div class="card">
+      <h3 style="margin-top:0;">Backend</h3>
+      <div class="sub">auto-selected for task: contact-rich manipulation</div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div class="backend sel">⚡ MuJoCo MJX <span class="fps">~0.9M steps/s</span></div>
+        <div class="backend">🎨 Isaac Lab (RTX) <span class="fps">vision-in-loop</span></div>
+        <div class="backend">🧪 ManiSkill 3 <span class="fps">~30k FPS</span></div>
+        <div class="backend">🌀 Genesis <span class="fps">multi-physics</span></div>
+      </div>
+      <p class="note" style="margin-bottom:0;">MJX chosen: superior contact model for grasping; switch to Isaac Lab when photoreal vision dominates.</p>
+    </div>
+
+    <div class="card" style="grid-column: span 2;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3 style="margin:0;">Rollout viewer</h3>
+        <div><span class="tag indigo">4,096 parallel envs</span><span class="tag mint">DR: visual=high physics=low</span></div>
+      </div>
+      <div class="viewport">
+        <div class="badge">env 0 / 4096 · task: load_dishwasher · step 312/600</div>
+        <div class="hud">success: 71.4% · ▲ 2.1%/epoch</div>
+        <div class="scene" style="position:absolute; inset:0;">
+          <div class="obj-box" style="left:14%; top:55%; width:24%; height:30%; border-color:var(--accent-2); position:absolute; border:1.5px solid; border-radius:4px; background:rgba(129,140,248,0.08);"></div>
+          <div class="obj-box" style="left:60%; top:40%; width:22%; height:34%; border-color:var(--accent); position:absolute; border:1.5px solid; border-radius:4px; background:rgba(110,231,183,0.07);"></div>
+          <div class="traj" style="left:38%; top:60%; width:24%; transform:rotate(-12deg);"></div>
+          <div class="traj" style="left:42%; top:52%; width:18%; transform:rotate(8deg); opacity:0.6;"></div>
+        </div>
+      </div>
+      <div class="grid cols-4" style="margin-top:12px;">
+        <div class="stat"><div class="big">4,096</div><div class="lbl">parallel envs</div></div>
+        <div class="stat"><div class="big">38s</div><div class="lbl">wall / 600 steps</div></div>
+        <div class="stat"><div class="big">2.4M</div><div class="lbl">frames captured</div></div>
+        <div class="stat"><div class="big">71.4%</div><div class="lbl">grader success</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sectiontitle">Recent rollout batches</div>
+  <div class="card">
+    <table class="data">
+      <tr><th>Batch</th><th>World × Robot</th><th>Policy</th><th>Backend</th><th>Success</th><th>Real-eval Δ</th><th></th></tr>
+      <tr>
+        <td class="mono">#5512</td><td>kitchen_v3 × G1</td><td>π0.5 (ft)</td><td>MJX</td>
+        <td><span class="dotok" style="background:var(--good); display:inline-block;"></span> 71%</td>
+        <td><span class="tag mint">−6% (honest)</span></td>
+        <td class="right"><a href="graders.html">grade →</a></td>
+      </tr>
+      <tr>
+        <td class="mono">#5510</td><td>kitchen_v3 × YAM</td><td>GR00T N1.7</td><td>MJX</td>
+        <td><span class="dotok" style="background:var(--accent-3); display:inline-block;"></span> 44%</td>
+        <td><span class="tag amber">−19% gap</span></td>
+        <td class="right"><a href="graders.html">grade →</a></td>
+      </tr>
+      <tr>
+        <td class="mono">#5501</td><td>warehouse_v1 × G1</td><td>MolmoAct 2</td><td>Isaac Lab</td>
+        <td><span class="dotok" style="background:var(--good); display:inline-block;"></span> 83%</td>
+        <td><span class="tag mint">−4%</span></td>
+        <td class="right"><a href="graders.html">grade →</a></td>
+      </tr>
+    </table>
+    <div class="versus indigo" style="margin-top:14px;">
+      <b>The "Real-eval Δ" column is the product.</b> Every sim number is paired with the measured gap on real hardware (RoboArena-style). A 19% gap is surfaced, not hidden — because data that aces sim and fails on contact is worthless. No competitor leads with this.
+    </div>
+  </div>
+
+  <p class="note" style="margin-top:28px;">Mock only — illustrative data. See <a href="../Artha.md">Artha.md §4c &amp; §7 (sim-to-real cliff)</a>.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artha — Physical AI Data & Eval Platform</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><span class="dot"></span> Artha</div>
+  <nav class="nav">
+    <a href="index.html" class="active">Overview</a>
+    <a href="world-store.html">World Store</a>
+    <a href="robot-store.html">Robot Store</a>
+    <a href="simulator.html">Artha Sim</a>
+    <a href="graders.html">Graders &amp; RL</a>
+  </nav>
+  <div class="spacer"></div>
+  <span class="pill">product mock · v0.1</span>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="kicker">The data &amp; eval layer for Physical AI</div>
+    <h1>Video in → physically-faithful worlds, graded rollouts, RL-ready data.</h1>
+    <p class="lede">Artha turns the world's existing video into <b>simulatable, articulated, collision-correct</b> environments, drops any robot into them, and ships <b>auto-graded, sim-to-real-validated</b> training data. Neutral to whose brain you're training — the picks &amp; shovels, not another humanoid.</p>
+    <div style="display:flex; gap:10px; margin-top:16px;">
+      <a class="btn primary" href="world-store.html">Build a world from video →</a>
+      <a class="btn" href="graders.html">See the RL loop</a>
+    </div>
+  </div>
+
+
+  <div class="sectiontitle">The loop — bringing "rollout → grade → reinforce" to robots</div>
+  <div class="pipe">
+    <div class="step"><div class="n">01 · World Store</div><h4>Video → World</h4><p>Phone clip → 3D geometry, objects, joints, mass &amp; friction.</p></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="n">02 · Robot Store</div><h4>Capability model</h4><p>DoF, reach, payload, sensors → drop-in agent.</p></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="n">03 · Artha Sim</div><h4>Rollouts at scale</h4><p>Backend-agnostic GPU sim. Millions of episodes.</p></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="n">04 · Graders</div><h4>Grade &amp; reinforce</h4><p>Score, reward, one RL epoch — validated on real hardware.</p></div>
+  </div>
+
+  <div class="sectiontitle">Four products, one platform</div>
+  <div class="grid cols-2">
+    <div class="card">
+      <h3>World Store</h3>
+      <div class="sub">From passive video to a physically-correct, articulated, simulatable world.</div>
+      <p class="muted" style="font-size:13.5px;">Reconstruction (3DGS/NeRF) is table stakes. We add the layer no one ships: inferred <b>joints, mass, friction, compliance</b> + visual <i>and</i> physical consistency. Take a World Labs/Marble or Cosmos export and make it actually simulate.</p>
+      <a class="btn" href="world-store.html">Open World Store →</a>
+    </div>
+    <div class="card">
+      <h3>Robot Store</h3>
+      <div class="sub">A queryable capability representation for any embodiment.</div>
+      <p class="muted" style="font-size:13.5px;">URDF/USD is solved; "what <i>can</i> this robot do?" is not. Learn DoF, reach, payload, dexterity and sensing from a few videos/specs, and reuse across embodiments.</p>
+      <a class="btn" href="robot-store.html">Open Robot Store →</a>
+    </div>
+    <div class="card">
+      <h3>Artha Sim</h3>
+      <div class="sub">Auto-wire world + robot into the right backend. Don't rebuild physics.</div>
+      <p class="muted" style="font-size:13.5px;">One API over Isaac Lab, MuJoCo MJX, ManiSkill, Genesis. Value is orchestration + domain randomization, not a new engine.</p>
+      <a class="btn" href="simulator.html">Open Artha Sim →</a>
+    </div>
+    <div class="card">
+      <h3>Graders &amp; RL</h3>
+      <div class="sub">Write graders, score rollouts, close the loop — without a sim-to-real cliff.</div>
+      <p class="muted" style="font-size:13.5px;">An open <b>Grader Store</b> with video-grounded, non-hackable success detection, reward shaping, and <b>RoboArena-style real-world eval</b> as a first-class product.</p>
+      <a class="btn" href="graders.html">Open Graders &amp; RL →</a>
+    </div>
+  </div>
+
+</body>
+</html>

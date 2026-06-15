@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graders &amp; RL — Artha</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .grader-row { display:flex; align-items:center; gap:12px; padding:10px; border-radius:9px; border:1px solid var(--border); margin-bottom:8px; }
+  .grader-row:hover { background:var(--panel-2); }
+  .grader-row .ic { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:15px; }
+  .epoch-bar { display:flex; align-items:flex-end; gap:5px; height:90px; }
+  .epoch-bar .b { flex:1; background:linear-gradient(180deg,var(--accent),var(--accent-2)); border-radius:4px 4px 0 0; position:relative; }
+  .epoch-bar .b span { position:absolute; top:-16px; left:0; right:0; text-align:center; font-family:var(--mono); font-size:10px; color:var(--muted); }
+  .hackwarn { border-left:3px solid var(--danger); background:rgba(251,113,133,0.07); padding:11px 14px; border-radius:0 9px 9px 0; font-size:13px; }
+  .hackwarn b { color:var(--danger); }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><span class="dot"></span> Artha</div>
+  <nav class="nav">
+    <a href="index.html">Overview</a>
+    <a href="world-store.html">World Store</a>
+    <a href="robot-store.html">Robot Store</a>
+    <a href="simulator.html">Artha Sim</a>
+    <a href="graders.html" class="active">Graders &amp; RL</a>
+  </nav>
+  <div class="spacer"></div>
+  <span class="pill">Pillar 4 · headline offering</span>
+</div>
+
+<div class="wrap">
+  <div class="kicker">Graders &amp; RL</div>
+  <h1 style="margin:6px 0 6px;">Grade rollouts you can actually train on.</h1>
+  <p class="lede">An open <b>Grader Store</b> with video-grounded, reward-hack-resistant success detection, reward shaping, and a one-click RL epoch — every result paired with real-world eval.</p>
+
+  <div class="versus" style="margin:16px 0;">
+    <b>This is the real moat — and it's harder than reconstruction.</b> LLM-as-physical-grader is promising but trivially reward-hacked. Artha invests disproportionately here: multi-signal graders (geometric + LLM-judge + physics-consistency), adversarial hack-detection, and human-in-the-loop calibration. <b>vs. everyone:</b> reconstruction is becoming commodity; <b>reliable graders are not.</b>
+  </div>
+
+  <div class="grid cols-3">
+    <div class="card" style="grid-column: span 2;">
+      <h3 style="margin-top:0;">Grader Store · task: <span class="mono">load_dishwasher</span></h3>
+      <div class="grader-row">
+        <div class="ic" style="background:rgba(110,231,183,0.15);">📐</div>
+        <div><b>geometric_success</b><div class="muted" style="font-size:12px;">all 6 items inside rack bounding volume, upright</div></div>
+        <div style="margin-left:auto;"><span class="tag mint">primary</span></div>
+      </div>
+      <div class="grader-row">
+        <div class="ic" style="background:rgba(129,140,248,0.15);">🧠</div>
+        <div><b>vlm_judge</b><div class="muted" style="font-size:12px;">Cosmos-Reason: "is this correctly &amp; safely loaded?"</div></div>
+        <div style="margin-left:auto;"><span class="tag indigo">cross-check</span></div>
+      </div>
+      <div class="grader-row">
+        <div class="ic" style="background:rgba(251,191,36,0.15);">⚖️</div>
+        <div><b>physics_consistency</b><div class="muted" style="font-size:12px;">no clipping / interpenetration / impossible forces</div></div>
+        <div style="margin-left:auto;"><span class="tag amber">anti-hack</span></div>
+      </div>
+      <div class="grader-row">
+        <div class="ic" style="background:rgba(251,113,133,0.13);">🚫</div>
+        <div><b>breakage_penalty</b><div class="muted" style="font-size:12px;">no glass shattered, no collision &gt; force threshold</div></div>
+        <div style="margin-left:auto;"><span class="tag gray">shaping</span></div>
+      </div>
+      <div class="code" style="margin-top:12px;">reward = 1.0·geometric_success
+       + 0.3·vlm_judge.agree
+       − 0.5·(1 − physics_consistency)   # kills sim-exploit policies
+       − 0.2·breakage_penalty</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Hack detector</h3>
+      <div class="hackwarn">
+        <b>⚠ Reward hack flagged</b><br>
+        Batch #5510: 12% of "successful" rollouts placed items by <b>clipping through the rack wall</b> (physics_consistency = 0.0). Excluded from training; grader auto-tightened.
+      </div>
+      <p class="note" style="margin-top:12px;">Without the physics-consistency term, these would have trained a policy that exploits the simulator — and fails 100% on real hardware. This is the failure mode that kills naïve sim-data startups.</p>
+    </div>
+  </div>
+
+  <div class="sectiontitle">RL loop — train, then verify on real hardware</div>
+  <div class="grid cols-3">
+    <div class="card" style="grid-column: span 2;">
+      <h3 style="margin-top:0;">Sim success per RL epoch <span class="muted" style="font-weight:400; font-size:13px;">· π0.5 fine-tune (RECAP-style)</span></h3>
+      <div class="epoch-bar" style="margin:22px 0 6px;">
+        <div class="b" style="height:38%;"><span>42%</span></div>
+        <div class="b" style="height:48%;"><span>54%</span></div>
+        <div class="b" style="height:55%;"><span>61%</span></div>
+        <div class="b" style="height:60%;"><span>66%</span></div>
+        <div class="b" style="height:64%;"><span>71%</span></div>
+        <div class="b" style="height:67%; opacity:0.5;"><span>~74%</span></div>
+      </div>
+      <div class="muted mono" style="font-size:11px; display:flex; justify-content:space-between;"><span>epoch 1</span><span>epoch 6 (proj.)</span></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;">Real-world eval</h3>
+      <div class="stat" style="margin-bottom:10px;"><div class="big" style="color:var(--good);">65%</div><div class="lbl">real success (RoboArena-style, n=40)</div></div>
+      <div class="cap" style="display:flex; justify-content:space-between;"><span class="muted">sim success</span><span class="mono">71%</span></div>
+      <div class="cap" style="display:flex; justify-content:space-between;"><span class="muted">sim-to-real gap</span><span class="mono" style="color:var(--good);">−6%</span></div>
+      <div class="versus indigo" style="margin-top:12px; font-size:12.5px;">
+        A <b>−6% gap</b> (not −40%) is the whole value proposition. Achieved via physics-faithful worlds + conservative-physics DR + real co-training data flagged in the Robot Store.
+      </div>
+    </div>
+  </div>
+
+  <div class="sectiontitle">Export — what the customer buys</div>
+  <div class="card">
+    <div class="grid cols-2">
+      <div>
+        <div class="code">artha dataset.export #5512 \
+  --format lerobot \
+  --include sim,real_eval,grader_traces \
+  --filter physics_consistency=1.0</div>
+      </div>
+      <div>
+        <table class="data">
+          <tr><th>Artifact</th><th>Count</th></tr>
+          <tr><td>RL-ready trajectories</td><td class="mono">182,400</td></tr>
+          <tr><td>Real-eval episodes</td><td class="mono">40</td></tr>
+          <tr><td>Grader traces (auditable)</td><td class="mono">all</td></tr>
+          <tr><td>Reward-hacks excluded</td><td class="mono" style="color:var(--danger);">21,888</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="versus" style="margin-top:14px;">
+      <b>The sellable unit:</b> a LeRobot-format dataset + auditable grader traces + a real-eval validation report. Neutral to whose model consumes it — a humanoid, industrial, or brain company buys data &amp; eval, not a competing robot. <b>The "Scale AI / Surge of robot RL."</b>
+    </div>
+  </div>
+
+  <p class="note" style="margin-top:28px;">Mock only — illustrative data. See <a href="../Artha.md">Artha.md §3 (Pillar 4), §6 differentiation, §7 risks</a>.</p>
+</div>
+</body>
+</html>
